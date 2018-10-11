@@ -1,6 +1,7 @@
 package interfaz;
 
 import java.awt.Color;
+import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JTextField;
@@ -726,14 +727,72 @@ public class VistaCargarInfo extends javax.swing.JFrame {
         
         imprimirCadenaFO( funcionObjetivo );
         imprimirCadenaRestriccion( restriccion1 );
-        String restriccionSinEspacios1 = quitarEspacios( restriccion1 ); 
-        System.out.println( restriccionSinEspacios1 );
         imprimirCadenaRestriccion( restriccion2 );
         imprimirCadenaRestriccion( restriccion3 );
         imprimirCadenaRestriccion( restriccion4 );
         imprimirCadenaRestriccion( restriccion5 );
+        
+        String cadena01 = quitarEspacios( restriccion1 ); 
+        String cadena02 = quitarEspacios( restriccion2 ); 
+        String cadena03 = quitarEspacios( restriccion3 ); 
+        String cadena04 = quitarEspacios( restriccion4 ); 
+        String cadena05 = quitarEspacios( restriccion5 ); 
+        
+        double restricion1[] = getCoeficientes( cadena01 );
+        double restricion2[] = getCoeficientes( cadena02 );
+        double restricion3[] = getCoeficientes( cadena03 );
+        double restricion4[] = getCoeficientes( cadena04 );
+        double restricion5[] = getCoeficientes( cadena05 );
+        
+        Hashtable<Integer, double[]> conjuntoRestricciones = new Hashtable<Integer, double[]>();
+        conjuntoRestricciones.put(1, restricion1);
+        conjuntoRestricciones.put(2, restricion2);
+        conjuntoRestricciones.put(3, restricion3);
+        conjuntoRestricciones.put(4, restricion4);
+        conjuntoRestricciones.put(5, restricion5);
+        
+        metodoAnalitico(variables, restricciones, conjuntoRestricciones);
+        
     }//GEN-LAST:event_BtnResolverMouseClicked
 
+    public void metodoAnalitico(int numVariables,int numRestricciones, Hashtable<Integer, double[]> conjuntoRestricciones){
+        int i,j;
+        for( i=1 ; i<numRestricciones ; i++ ){
+            for( j=i+1 ; j<6 ; j++ ){
+                System.out.println(i+" "+j);
+            }
+        }
+    }
+    
+    public double[] getCoeficientes(String cadena){
+        String funciones[] = cadena.split("(<|>|>=|<=)");
+        double [] resultado1 = separarCoeficientes( funciones[0] );
+        double [] resultado2 = separarCoeficientes( funciones[1] );
+        double valorCoeficietes[] = {0.0,0.0,0.0,0.0,0.0,0.0};
+        for( int i=0; i<valorCoeficietes.length; i++ ){
+            valorCoeficietes[i] += ( resultado1[i] + resultado2[i] );
+            System.out.println("X"+i+": "+valorCoeficietes[i]);
+        }
+        return valorCoeficietes;
+    }
+    
+    public double[] separarCoeficientes( String cadena ){
+        double valores[] = {0.0,0.0,0.0,0.0,0.0,0.0};
+        String coeficientes[] = cadena.split("(\\*)?(a|b|c|d)?(\\+|-)");
+        imprimirCoeficientes(coeficientes);
+        for(int i= 0; i<coeficientes.length; i++){
+            valores[i] += Double.parseDouble(coeficientes[i]);
+        }
+        return valores;
+    }
+    
+    public void imprimirCoeficientes(String coeficientes[]){
+        int i = 0;
+        while( i < coeficientes.length ){
+            System.out.println(coeficientes[i++]);
+        }
+    }
+    
     public void imprimirCadenaFO( StringBuilder cadena ){
         if( cadena.length() > 0 ){
             if( analizarFO( cadena ) ){
