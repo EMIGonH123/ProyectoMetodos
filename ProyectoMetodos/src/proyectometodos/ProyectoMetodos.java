@@ -9,27 +9,72 @@ import java.util.regex.Pattern;
 
 public class ProyectoMetodos {
 
-    public static void Combinacion(int num){
-        for(int i=0;i<Math.pow(2,num);i++){
-            int arreglo[]=new int[num];
-            int temp=i;
-            for(int l=0;l<arreglo.length;l++){
-                arreglo[l]=temp%2;
-                temp/=2;
-            }
-            String res="";
-            for(int j=0;j<arreglo.length;j++){
-                if(arreglo[j]==1){
-                res+="["+(j+1)+"]";
-                }
-            }
-            System.out.println("Combinacion "+(i+1)+"= "+res);
-        }
+    
+    
+    public void imprimirVector(){
+    
     }
     
-
     public static void main(String[] args) {
-        Combinacion(3);
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Dame el tamaño del vector: ");
+        int tamVector = scan.nextInt();
+        int v1[] = new int[tamVector];
+        int i;
+        int decimal1 = 0,decimal2 = 0;
+        
+        System.out.println("Vector generado: ");
+        for(i = 0; i<tamVector; i++){
+            v1[i] =(int)Math.floor(Math.random()*2);
+            System.out.print(v1[i]+",");
+        }System.out.println();
+        System.out.println("Dame el pivote: ");
+        int pivote = scan.nextInt();
+        if(pivote > tamVector){
+            System.out.println("El pivote supera el tamaño del vector");
+        }else{
+            int pivoteAux = pivote;
+            int tamPivote2 = tamVector-pivote;
+            for( i=0;i<pivote;i++){
+                if( v1[i] == 1){
+                    decimal1 += Math.pow(2,(pivoteAux-1));
+                }
+                pivoteAux--;
+            }
+            int tamPivote2Aux = tamPivote2;
+            for(i=0; i<tamPivote2; i++){
+                if(v1[i+pivote] == 1){
+                    decimal2 += Math.pow(2,(tamPivote2Aux-1));
+                }
+                tamPivote2Aux--;
+            }
+        }
+        System.out.println("El valor decimal 1 es: "+decimal1);
+        System.out.println("El valor decimal 2 es: "+decimal2);
+        
+        
+        /*Scanner scan = new Scanner(System.in);
+        System.out.println("Filas: ");
+        int filas = scan.nextInt();
+        
+        System.out.println("Columnas: ");
+        int col = scan.nextInt();
+        
+        int matriz[][] = new int[filas][col];
+        System.out.println("Llenando la matriz");
+        for(int i = 0; i<filas; i++){
+            for(int j=0; j< col; j++){
+                System.out.print("["+(i+1)+"]["+(j+1)+"]: ");
+                matriz[i][j] = scan.nextInt();
+                //System.out.println();
+            }
+        }
+        System.out.println("Los valores de la matriz son:");
+        for(int i = 0; i<filas; i++){
+            for(int j=0; j< col; j++){
+                System.out.print(matriz[i][j]+",");
+            }System.out.println();
+        }*/
         
         /*String er = "(\\*)?(a|b|c|d)?(\\+|-)";
         String cadena = "123.6*a+1243b-123d-123-";
