@@ -3,20 +3,117 @@ package proyectometodos;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProyectoMetodos {
 
+   public static int Mj(double x){
+        double val = (Math.log(x)/Math.log(2));
+        Pattern pat = Pattern.compile("(\\d)+\\.(0)+");
+        Matcher mat = pat.matcher(String.valueOf(val));
+        int mj = (int)val;
+        if( mat.matches() ){
+            return mj;
+        }else{
+            return (mj+1);
+        }
+    }
     
+    public static int validarLimites( Double limites[], int bitsPresicion ){
+        double vc = ( limites[1]-limites[0] )*( Math.pow(10, bitsPresicion) );
+        int mj = Mj(vc);
+        double vi = Math.pow(2, (mj-1) );
+        double vd = ( Math.pow(2, mj) ) -1;
+        System.out.println("Lado izquierdo: "+vi);
+        System.out.println("Lado central: "+vc);
+        System.out.println("Lado derecho: "+vd);
+        if( (vc > vi) && (vc < vd) ){
+            return mj;
+        }else{
+            return 0;
+        }
+        
+    }
     
-    public void imprimirVector(){
-    
+    public static int obtenerValor(int vector[], int tamVector, int pivote, int tamPivote){
+        int auxTamPivote = tamPivote;
+        int i, decimal=0;
+        for(i=0; i<tamPivote; i++){
+            if(vector[i+pivote] == 1){
+                decimal += Math.pow(2,(auxTamPivote-1));
+            }
+            auxTamPivote--;
+        }
+        return decimal;
     }
     
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
+        
+        HashSet<Double[]> limites =  new HashSet<Double[]>();
+        
+        System.out.println("Numero de variables: ");
+        int numVariables = scan.nextInt();
+        
+        Integer valoresDeBits[] = new Integer[numVariables];
+        
+        //Capturamos los limites
+        for(int i = 0; i<numVariables; i++){
+            Double limite[] = new Double[2];
+            System.out.println("Limite inferior: ");
+            limite[0] = scan.nextDouble();
+            System.out.println("Limite superior: ");
+            limite[1] = scan.nextDouble();
+            limites.add(limite);
+        }
+        
+        
+        System.out.println("Numero de Bits de precision: ");
+        int numBitsP = scan.nextInt();
+        
+        System.out.println("Numero de Poblaciones: ");
+        int numPoblaciones = scan.nextInt();
+        
+        System.out.println("Numero de individuos: ");
+        int numIndividuos = scan.nextInt();
+        
+        int numBitsTotales = 0;
+        Iterator<Double[]> iterator = limites.iterator();
+        int i= 0;
+        while( iterator.hasNext() ){
+            valoresDeBits[i] = validarLimites(iterator.next(),numBitsP);
+            numBitsTotales += valoresDeBits[i];
+            System.out.println("Mj"+i+": "+valoresDeBits[i]);
+            i++;
+        }
+        
+        for( i=0; i<numIndividuos; i++){
+            int vector[] = new int[numBitsTotales];
+            for(int j = 0; j<numBitsTotales; j++){
+                vector[j] =(int)Math.floor(Math.random()*2);
+                System.out.print(vector[j]+",");
+            }System.out.println();
+            for(int k=0; k<valoresDeBits.length; k++){
+                int valorDeCadenaBits = 0;
+                if( k == 0 ){
+                    valorDeCadenaBits = obtenerValor(vector, vector.length,0, valoresDeBits[k]);
+                }else if( k == (valoresDeBits.length-1) ){
+                    valorDeCadenaBits = obtenerValor(vector, vector.length,valoresDeBits[k-1], valoresDeBits[k]);
+                }else{
+                    valorDeCadenaBits = obtenerValor(vector, vector.length,valoresDeBits[k-1], valoresDeBits[k]);
+                }
+                
+                System.out.println("Valor "+(k+1)+": "+valorDeCadenaBits);
+            }System.out.println();
+        }
+        
+        
+        /*Scanner scan = new Scanner(System.in);
         System.out.println("Dame el tamaño del vector: ");
         int tamVector = scan.nextInt();
         int v1[] = new int[tamVector];
@@ -51,7 +148,7 @@ public class ProyectoMetodos {
         }
         System.out.println("El valor decimal 1 es: "+decimal1);
         System.out.println("El valor decimal 2 es: "+decimal2);
-        
+        */
         
         /*Scanner scan = new Scanner(System.in);
         System.out.println("Filas: ");
